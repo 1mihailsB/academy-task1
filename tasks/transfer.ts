@@ -9,9 +9,8 @@ task("transfer", "Transfer tokens")
     .addParam("amount", "The amount")
     .setAction(async (taskArgs, hre) => {
         const signers =  await hre.ethers.getSigners();
-        console.log(taskArgs.from);
+
         const from = signers.find(signer => {
-            console.log(signer.address);
             return signer.address === taskArgs.caller;
         });
 
