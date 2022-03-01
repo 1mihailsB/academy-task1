@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import { expect } from "chai";
-import { BigNumber, Contract, ContractFactory, ContractReceipt } from "ethers";
+import { Contract, ContractFactory } from "ethers";
 import { ethers } from "hardhat";
 
 describe("ERC20", function () {
@@ -87,12 +87,12 @@ describe("ERC20", function () {
     });
 
     it("Should revert if called by non owner and non admin", async function () {
-      await expect(contract.connect(addr1.address).mint(addr1.address, correctTestValue))
+      await expect(contract.connect(addr1).mint(addr1.address, correctTestValue))
         .to.be.revertedWith('Must be called by owner or admin');
     });
 
     it("Should revert if passed address is zero", async function () {
-      await expect(contract.connect(addr1.address).mint(nullAddress, correctTestValue))
+      await expect(contract.connect(addr1).mint(nullAddress, correctTestValue))
         .to.be.revertedWith('_account must not be zero address');
     });
   });
@@ -122,17 +122,17 @@ describe("ERC20", function () {
     });
 
     it("Should revert if called by non owner and non admin", async function () {
-      await expect(contract.connect(addr1.address).burn(addr1.address, correctTestValue))
+      await expect(contract.connect(addr1).burn(addr1.address, correctTestValue))
         .to.be.revertedWith('Must be called by owner or admin');
     });
 
     it("Should revert if passed address is zero", async function () {
-      await expect(contract.connect(addr1.address).burn(nullAddress, correctTestValue))
+      await expect(contract.connect(addr1).burn(nullAddress, correctTestValue))
         .to.be.revertedWith('_account must not be zero address');
     });
 
     it("Should revert if burn amount exceeds balance", async function () {
-      await expect(contract.connect(owner.address).burn(addr1.address, correctTestValue))
+      await expect(contract.connect(owner).burn(addr1.address, correctTestValue))
         .to.be.revertedWith('Burn amount exceeds balance');
     });
   });
@@ -140,12 +140,12 @@ describe("ERC20", function () {
   describe("approve", function () {
     it("Should correctly set allowance", async function () {
       await contract.connect(addr1).approve(addr2.address, correctTestValue * 5);
-      expect((await contract.connect(owner.address).allowance(addr1.address, addr2.address)).toNumber())
+      expect((await contract.connect(owner).allowance(addr1.address, addr2.address)).toNumber())
         .to.equal(correctTestValue * 5);
     });
 
     it("Should rvert if called from null address", async function () {
-      await expect(contract.connect(nullAddress).approve(addr2.address, correctTestValue * 5))
+      await expect(contract.connect(await ethers.getSigner(nullAddress)).approve(addr2.address, correctTestValue * 5))
         .to.be.revertedWith('_owner must not be zero address');
     });
 
@@ -166,7 +166,7 @@ describe("ERC20", function () {
       await contract.connect(addr1).approve(addr2.address, correctTestValue * 5);
       await contract.connect(addr1).increaseAllowance(addr2.address, correctTestValue);
 
-    expect((await contract.connect(owner.address).allowance(addr1.address, addr2.address)).toNumber())
+    expect((await contract.connect(owner).allowance(addr1.address, addr2.address)).toNumber())
       .to.equal(correctTestValue * 6);
     });
   });
@@ -176,14 +176,14 @@ describe("ERC20", function () {
       await contract.connect(addr1).approve(addr2.address, correctTestValue * 5);
       await contract.connect(addr1).decreaseAllowance(addr2.address, correctTestValue);
 
-    expect((await contract.connect(owner.address).allowance(addr1.address, addr2.address)).toNumber())
+    expect((await contract.connect(owner).allowance(addr1.address, addr2.address)).toNumber())
       .to.equal(correctTestValue * 4);
     });
   });
 
   describe("transfer", function () {
     it("Should revert if passed address is 0", async function () {
-      await expect(contract.connect(addr1.address).transfer(nullAddress, correctTestValue))
+      await expect(contract.connect(addr1).transfer(nullAddress, correctTestValue))
         .to.be.revertedWith('_to must not be zero address');
     });
 
@@ -193,7 +193,7 @@ describe("ERC20", function () {
     });
 
     it("Should revert if amount exceeds balance", async function () {
-      await expect(contract.connect(addr1.address).transfer(addr2.address, correctTestValue))
+      await expect(contract.connect(addr1).transfer(addr2.address, correctTestValue))
         .to.be.revertedWith('_amount exceeds balance of _from');
     });
 
@@ -201,10 +201,10 @@ describe("ERC20", function () {
       await contract.connect(owner).mint(addr1.address, correctTestValue * 5);
       await contract.connect(addr1).transfer(addr2.address, correctTestValue);
 
-      expect((await contract.connect(owner.address).balanceOf(addr1.address)).toNumber())
+      expect((await contract.connect(owner).balanceOf(addr1.address)).toNumber())
         .to.equal(correctTestValue * 4);
 
-      expect((await contract.connect(owner.address).balanceOf(addr2.address)).toNumber())
+      expect((await contract.connect(owner).balanceOf(addr2.address)).toNumber())
         .to.equal(correctTestValue);
     });
 
