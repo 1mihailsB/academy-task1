@@ -39,7 +39,6 @@ contract ERC20 {
     }
 
     function iApprove(address _owner, address _for, uint256 _value) internal {
-        require(_owner != address(0), "_owner must not be zero address");
         require(_for != address(0), "_for must not be zero address");
 
         allowances[_owner][_for] = _value;
@@ -47,7 +46,6 @@ contract ERC20 {
     }
 
     function iTransfer(address _from, address _to, uint256 _amount) internal {
-        require(_from != address(0), "_from must not be zero address");
         require(_to != address(0), "_to must not be zero address");
         require(balances[_from] >= _amount, "_amount exceeds balance of _from");
 

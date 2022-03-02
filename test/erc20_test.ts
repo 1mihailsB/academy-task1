@@ -144,11 +144,6 @@ describe("ERC20", function () {
         .to.equal(correctTestValue * 5);
     });
 
-    it("Should rvert if called from null address", async function () {
-      await expect(contract.connect(await ethers.getSigner(nullAddress)).approve(addr2.address, correctTestValue * 5))
-        .to.be.revertedWith('_owner must not be zero address');
-    });
-
     it("Should rvert if passed null address", async function () {
       await expect(contract.connect(addr1).approve(nullAddress, correctTestValue * 5))
         .to.be.revertedWith('_for must not be zero address');
@@ -179,6 +174,12 @@ describe("ERC20", function () {
     expect((await contract.connect(owner).allowance(addr1.address, addr2.address)).toNumber())
       .to.equal(correctTestValue * 4);
     });
+
+    it("Should revert if resulting balance below zero", async function () {
+      await contract.connect(addr1).approve(addr2.address, correctTestValue * 5);
+      await expect(contract.connect(addr1).decreaseAllowance(addr2.address, correctTestValue * 6))
+        .to.be.revertedWith('Resulting allowance below zero');
+    });
   });
 
   describe("transfer", function () {
@@ -187,15 +188,16 @@ describe("ERC20", function () {
         .to.be.revertedWith('_to must not be zero address');
     });
 
-    it("Should revert if called from zero address", async function () {
-      await expect(contract.connect(nullAddress).transfer(nullAddress, correctTestValue))
-        .to.be.revertedWith('_from must not be zero address');
-    });
-
     it("Should revert if amount exceeds balance", async function () {
       await expect(contract.connect(addr1).transfer(addr2.address, correctTestValue))
         .to.be.revertedWith('_amount exceeds balance of _from');
     });
+
+    it("Should revert if passed null address", async function () {
+      await expect(contract.connect(addr1).transfer(nullAddress, correctTestValue))
+        .to.be.revertedWith('_to must not be zero address');
+    });
+
 
     it("Should correctly transfer balance", async function () {
       await contract.connect(owner).mint(addr1.address, correctTestValue * 5);
@@ -218,7 +220,7 @@ describe("ERC20", function () {
 
   describe("transferFrom", function () {
     it("Should revert if value exceeds balance", async function () {
-      await expect(contract.connect(addr1.address).transferFrom(addr1.address, addr2.address, correctTestValue))
+      await expect(contract.connect(addr1).transferFrom(addr1.address, addr2.address, correctTestValue))
         .to.be.revertedWith('_value exceeds allowance');
     });
 
