@@ -1,5 +1,5 @@
 import { task } from "hardhat/config";
-import getErcContract from "./common";
+import { getErcContract } from "./common";
 import "@nomiclabs/hardhat-waffle";
 
 task("transfer", "Transfer tokens")

@@ -1,12 +1,10 @@
 import { task } from "hardhat/config";
-import { getErcContract } from "./common";
+import { getStakingContract } from "./common";
 import "@nomiclabs/hardhat-waffle";
 
-task("transferFrom", "Transfer tokens")
+task("stake", "Stake coins")
     .addParam("contract", 'Address of contract')
     .addParam("caller", "Caller address")
-    .addParam("from", "The from account's address")
-    .addParam("to", "The to account's address")
     .addParam("amount", "The amount")
     .setAction(async (taskArgs, hre) => {
         const signers =  await hre.ethers.getSigners();
@@ -19,8 +17,7 @@ task("transferFrom", "Transfer tokens")
             throw new Error("'Caller' account not found");
         }
       
-        const contract = await getErcContract(hre.ethers, taskArgs.contract);
-        await contract.mint(taskArgs.caller, taskArgs.amount);
+        const contract = await getStakingContract(hre.ethers, taskArgs.contract);
 
-        return await contract.connect(from).transferFrom(taskArgs.from, taskArgs.to, taskArgs.amount);
+        return await contract.connect(from).stake(taskArgs.amount);
   });

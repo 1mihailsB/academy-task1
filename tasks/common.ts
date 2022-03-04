@@ -4,4 +4,10 @@ const getErcContract = (async (ethers: any, address: string) => {
   return await ErcContract.attach(address);
 });
 
-export default getErcContract;
+const getStakingContract = (async (ethers: any, address: string) => {
+  const ErcContract = await ethers.getContractFactory('Staking');
+
+  return await ErcContract.attach(address);
+});
+
+export { getErcContract, getStakingContract }
