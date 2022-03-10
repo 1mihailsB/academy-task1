@@ -1,13 +1,8 @@
-const getErcContract = (async (ethers: any, address: string) => {
-  const ErcContract = await ethers.getContractFactory('ERC20');
+const getErc721Contract = (async (ethers: any, address: string) => {
+  const ErcContract = await ethers.getContractFactory('MyERC721');
 
   return await ErcContract.attach(address);
 });
 
-const getStakingContract = (async (ethers: any, address: string) => {
-  const ErcContract = await ethers.getContractFactory('Staking');
 
-  return await ErcContract.attach(address);
-});
-
-export { getErcContract, getStakingContract }
+export default getErc721Contract;

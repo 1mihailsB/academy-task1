@@ -1,12 +1,11 @@
 import { task } from "hardhat/config";
-import { getErcContract } from "./common";
+import getErc721Contract  from "./common";
 import "@nomiclabs/hardhat-waffle";
 
-task("approve", "Approve an account's balance")
+task("mint", "Mint an ERC717 token")
     .addParam("contract", 'Address of contract')
-    .addParam("from", "Caller's account")
-    .addParam("to", "Receiver's account")
-    .addParam("amount", "The amount")
+    .addParam("from", 'Address of caller')
+    .addParam("to", "Caller's account")
     .setAction(async (taskArgs, hre) => {
         const signers =  await hre.ethers.getSigners();
 
@@ -18,6 +17,6 @@ task("approve", "Approve an account's balance")
             throw new Error("'From' account not found");
         }
 
-        const contract = await getErcContract(hre.ethers, taskArgs.contract);
-        return await contract.connect(from).approve(taskArgs.to, taskArgs.amount);
+        const contract = await getErc721Contract(hre.ethers, taskArgs.contract);
+        return await contract.connect(from).safeMint(taskArgs.to);
 });
