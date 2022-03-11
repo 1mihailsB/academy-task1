@@ -1,13 +1,11 @@
-const getErcContract = (async (ethers: any, address: string) => {
-  const ErcContract = await ethers.getContractFactory('ERC20');
+export const getErc721Contract = (async (ethers: any, address: string) => {
+  const ErcContract = await ethers.getContractFactory('MyERC721');
 
   return await ErcContract.attach(address);
 });
 
-const getStakingContract = (async (ethers: any, address: string) => {
-  const ErcContract = await ethers.getContractFactory('Staking');
+export const getErc1155Contract = (async (ethers: any, address: string) => {
+  const ErcContract = await ethers.getContractFactory('MyERC1155');
 
   return await ErcContract.attach(address);
 });
-
-export { getErcContract, getStakingContract }
