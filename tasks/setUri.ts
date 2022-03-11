@@ -1,5 +1,5 @@
 import { task } from "hardhat/config";
-import getErc721Contract  from "./common";
+import { getErc721Contract }  from "./common";
 import "@nomiclabs/hardhat-waffle";
 
 task("setUri", "Set uri in ERC721 token")
