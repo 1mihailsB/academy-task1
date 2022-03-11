@@ -1,7 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import { expect } from "chai";
 import { Contract, ContractFactory } from "ethers";
-import { ethers, network } from "hardhat";
+import { ethers } from "hardhat";
 
 describe("Staking", function () {
     let Factory: ContractFactory;
@@ -13,7 +13,6 @@ describe("Staking", function () {
     const name = 'CryptonERC721', symbol = 'C721';
 
     beforeEach(async function () {
-        // Get the ContractFactory and Signers here.
         Factory = await ethers.getContractFactory("MyERC721");
         [owner, addr1, addr2] = await ethers.getSigners();
         erc721 = await Factory.deploy(name, symbol);
